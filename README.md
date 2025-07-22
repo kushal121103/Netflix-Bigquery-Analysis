@@ -6,7 +6,7 @@
 
 This project analyzes the Netflix dataset using Google BigQuery and SQL. It covers content trends by type, genre, country, and actors, offering real-world business insights.The goal is to explore and analyze Netflix's Movies and TV Shows dataset using SQL in BigQuery, uncovering content trends, audience preferences, and platform insights to support data-driven decisions.
 
-**Objective**:
+##  **Objective**:
 
 Compare Movies and TV Shows – Find out how much of Netflix’s content is movies vs. TV shows.
 
@@ -18,9 +18,9 @@ Find the Longest Movie – Identify the movie with the highest duration availabl
 
 Analyze Recently Added Content – Retrieve and study content added to Netflix in the last 5 years.
 
-### BigQuery Table Schema
+##  **BigQuery Table Schema**
 
-| **Column Name** | **Data Type** | **Mode** | **Description**                  |
+| Column Name | Data Type | Mode | Description                  |
 | --------------- | ------------- | -------- | -------------------------------- |
 | `show_id`       | STRING        | NULLABLE | Unique ID for each show          |
 | `type`          | STRING        | NULLABLE | Either "Movie" or "TV Show"      |
