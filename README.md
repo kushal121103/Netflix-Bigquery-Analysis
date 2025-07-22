@@ -100,3 +100,107 @@ SELECT *
 ```
 Objective: List all content directed by 'jeo camp'.
 
+##  **8. List All TV Shows with More Than 5 Seasons**
+```sql
+SELECT *
+FROM `netflix-analysis-466609.metflix_dataset.netflix_title`
+WHERE type='TV Show' AND SAFE_CAST(SPLIT(duration,'')[OFFSET(0)] AS INT64 )>5
+```
+Objective: Identify TV shows with more than 5 seasons.
+
+##  **9. Count the Number of Content Items in Each Genre**
+```sql
+SELECT genre ,COUNT(*) AS total_count 
+ FROM(
+  SELECT TRIM(Genre) AS genre
+ FROM `netflix-analysis-466609.metflix_dataset.netflix_title`,
+ UNNEST(SPLIT(listed_in,',')) AS genre
+ )
+ GROUP BY genre
+ ORDER BY total_count DESC
+```
+Objective: Count the number of content items in each genre.
+
+##  **10. Find Each Year and the Average Number of Content Releases in India on Netflix**
+```sql
+ SELECT 
+  release_year,
+  COUNT(show_id) AS total_release,
+  ROUND(
+    COUNT(show_id) / (
+      SELECT COUNT(*) FROM `netflix-analysis-466609.metflix_dataset.netflix_title` WHERE country = 'India'
+    ) * 100, 2
+  ) AS avg_release
+FROM `netflix-analysis-466609.metflix_dataset.netflix_title`
+WHERE country = 'India'
+GROUP BY release_year
+ORDER BY avg_release DESC
+LIMIT 5;
+```
+Objective: Calculate and rank years by the average number of content releases in India.
+
+##  **11. List All Movies that are Documentaries**
+```sql
+SELECT * 
+ FROM `netflix-analysis-466609.metflix_dataset.netflix_title`
+ WHERE listed_in LIKE '%Documentaries%'
+```
+Objective: Retrieve all movies classified as documentaries.
+
+##  **12. Find All Content Without a Director**
+```sql
+SELECT *
+FROM `netflix-analysis-466609.metflix_dataset.netflix_title`
+WHERE director IS NULL OR director=''
+```
+Objective: List content that does not have a director.
+
+##  **13. Find How Many Movies Actor 'Salman Khan' Appeared in the Last 10 Years**
+```sql
+SELECT title
+FROM `netflix-analysis-466609.metflix_dataset.netflix_title`
+WHERE LOWER(`cast`) LIKE '%salman khan%'
+  AND release_year >= EXTRACT(YEAR FROM CURRENT_DATE()) - 10;
+```
+Objective: Count the number of movies featuring 'Salman Khan' in the last 10 years.
+
+##  **14. Top 10 Actors Who Have Appeared in the Highest Number of Movies Produced in India**
+```sql
+SELECT 
+  TRIM(actor) AS actor,
+  COUNT(*) AS appearances
+FROM (
+  SELECT 
+    SPLIT(`cast`, ',') AS actor_list
+  FROM `netflix-analysis-466609.metflix_dataset.netflix_title`
+  WHERE country LIKE '%India%'  
+    AND `cast` IS NOT NULL       
+), UNNEST(actor_list) AS actor
+WHERE TRIM(actor) != ''         
+GROUP BY actor
+ORDER BY appearances DESC
+LIMIT 10;
+```
+Objective: Identify the top 10 actors with the most appearances in Indian-produced movies.
+
+##  **15. Categorize Content Based on the Presence of 'Kill' and 'Violence' Keywords**
+```sql
+SELECT category, COUNT(*) AS content_count
+FROM (
+  SELECT 
+    CASE 
+      WHEN LOWER(description) LIKE '%kill%' OR LOWER(description) LIKE '%violence%' THEN 'Bad'
+      ELSE 'Good'
+    END AS category
+  FROM `netflix-analysis-466609.metflix_dataset.netflix_title`
+)
+GROUP BY category;
+```
+Objective: Categorize content as 'Bad' if it contains 'kill' or 'violence' and 'Good' otherwise. Count the number of items in each category.
+
+##  **Conclusion**
+The analysis provided valuable insights into the distribution of content types, popular ratings, and content trends across different years and countries.
+
+Key patterns were identified, such as the most active countries in content production, popular genres, and the frequency of new additions to the Netflix platform.
+
+These findings can support data-driven decisions for content planning, marketing strategies, and improving user engagement based on audience preferences.
